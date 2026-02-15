@@ -4,265 +4,958 @@
 <script>!function(){var a="serlf_auth";try{var b=JSON.parse(localStorage.getItem(a));if(!b||!b.expires||b.expires<Date.now()){localStorage.removeItem(a);window.location.href="login.html"}}catch(e){window.location.href="login.html"}}();</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>serlf — Dashboard</title>
+<title>Captain Commerce — serlf.shop</title>
 <style>
-:root { --bg: #060610; --surface: #0c0c1a; --surface2: #12122a; --border: #1a1a3e; --text: #e8e8f0; --muted: #6b6b8d; --green: #34d399; --cyan: #22d3ee; --accent: #7c6df0; --accent2: #f06292; }
+:root {
+  --navy: #0f172a;
+  --navy-light: #1e293b;
+  --navy-lighter: #334155;
+  --captain-pink: #ec4899;
+  --captain-pink-light: #f472b6;
+  --glass-bg: rgba(15, 23, 42, 0.85);
+  --glass-border: rgba(236, 72, 153, 0.2);
+  --text: #f8fafc;
+  --text-muted: #94a3b8;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-system, system-ui, sans-serif; line-height: 1.6; }
-nav { padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
-.nav-logo { font-size: 1.3rem; font-weight: 800; letter-spacing: -1px; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.nav-links { display: flex; gap: 1.5rem; align-items: center; }
-.nav-links a { color: var(--muted); font-size: 0.85rem; font-weight: 500; text-decoration: none; transition: color 0.3s; }
-.nav-links a:hover { color: var(--text); }
-.nav-badge { background: rgba(52,211,153,0.15); color: var(--green); padding: 3px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
 
-.container { max-width: 1000px; margin: 0 auto; padding: 3rem 2rem; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  background: var(--navy);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
 
-.welcome-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem; }
-.welcome-bar h1 { font-size: 1.8rem; font-weight: 800; }
-.welcome-bar h1 span { background: linear-gradient(135deg, var(--green), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.status-pill { display: flex; align-items: center; gap: 0.5rem; background: var(--surface); border: 1px solid var(--green); border-radius: 20px; padding: 6px 16px; font-size: 0.85rem; }
-.status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s ease-in-out infinite; }
-@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+/* Animated Background */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(600px circle at 20% 30%, rgba(236, 72, 153, 0.15), transparent),
+    radial-gradient(800px circle at 80% 70%, rgba(236, 72, 153, 0.1), transparent),
+    radial-gradient(400px circle at 40% 80%, rgba(59, 130, 246, 0.1), transparent);
+  z-index: -1;
+  animation: float 20s ease-in-out infinite;
+}
 
-.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 3rem; }
-.card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; transition: all 0.3s; }
-.card:hover { border-color: var(--green); }
-.card-icon { font-size: 2rem; margin-bottom: 1rem; }
-.card-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem; }
-.card-desc { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.2rem; }
-.card-status { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; }
-.card-status .dot { width: 6px; height: 6px; border-radius: 50%; }
-.dot-live { background: var(--green); }
-.dot-setup { background: var(--cyan); animation: pulse 1.5s ease-in-out infinite; }
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  33% { transform: translate(30px, -30px) rotate(1deg); }
+  66% { transform: translate(-20px, 20px) rotate(-1deg); }
+}
 
-.section-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 1.5rem; }
+/* Glass Morphism Components */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+}
 
-.actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 3rem; }
-.action { display: flex; align-items: center; gap: 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem 1.5rem; text-decoration: none; color: var(--text); transition: all 0.3s; }
-.action:hover { border-color: var(--green); transform: translateY(-2px); }
-.action-icon { font-size: 1.5rem; }
-.action-text { font-weight: 600; font-size: 0.95rem; }
-.action-sub { color: var(--muted); font-size: 0.8rem; }
+/* Top Navigation */
+.topnav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  padding: 1rem 2rem;
+}
 
-.plan-bar { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-.plan-info { }
-.plan-name { font-weight: 700; }
-.plan-price { color: var(--green); font-size: 0.9rem; }
-.plan-btn { padding: 8px 20px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; background: rgba(52,211,153,0.1); color: var(--green); border: 1px solid rgba(52,211,153,0.3); text-decoration: none; transition: all 0.3s; }
-.plan-btn:hover { background: rgba(52,211,153,0.2); }
+.nav-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+}
+
+.captain-avatar {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--captain-pink), var(--captain-pink-light));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(236, 72, 153, 0.5); }
+  50% { box-shadow: 0 0 30px rgba(236, 72, 153, 0.8); }
+}
+
+.brand-text {
+  color: var(--text);
+  font-weight: 800;
+  font-size: 1.2rem;
+}
+
+.brand-domain {
+  color: var(--captain-pink);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nav-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--success);
+  font-size: 0.85rem;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--glass-border);
+}
+
+/* Main Container */
+.main-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Hero Section */
+.hero {
+  text-align: center;
+  padding: 4rem 2rem;
+  margin-bottom: 3rem;
+}
+
+.captain-intro {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.captain-icon {
+  font-size: 4rem;
+  filter: drop-shadow(0 0 20px rgba(236, 72, 153, 0.5));
+}
+
+.captain-title {
+  font-size: 3rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--captain-pink), var(--captain-pink-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+}
+
+.captain-subtitle {
+  color: var(--text-muted);
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.hero-description {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 2rem auto;
+  line-height: 1.7;
+}
+
+/* Pricing Hero */
+.pricing-hero {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 2px solid var(--captain-pink);
+  border-radius: 24px;
+  padding: 3rem;
+  margin: 3rem 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.pricing-hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.1), transparent);
+  animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.pricing-content {
+  position: relative;
+  z-index: 1;
+}
+
+.price-tag {
+  font-size: 4rem;
+  font-weight: 900;
+  color: var(--captain-pink);
+  margin-bottom: 0.5rem;
+}
+
+.price-description {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.price-details {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+.cta-button {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--captain-pink), var(--captain-pink-light));
+  color: white;
+  padding: 1.25rem 3rem;
+  border-radius: 16px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(236, 72, 153, 0.3);
+}
+
+.cta-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 40px rgba(236, 72, 153, 0.5);
+}
+
+/* Product Grid */
+.products-section {
+  margin: 4rem 0;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, var(--text), var(--captain-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.section-subtitle {
+  color: var(--text-muted);
+  font-size: 1.2rem;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.product-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 2rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.product-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(236, 72, 153, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--captain-pink);
+  box-shadow: 0 20px 40px rgba(236, 72, 153, 0.2);
+}
+
+.product-card:hover::before {
+  left: 100%;
+}
+
+.product-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.product-icon {
+  font-size: 2.5rem;
+  filter: drop-shadow(0 2px 10px rgba(236, 72, 153, 0.3));
+}
+
+.product-info h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.product-category {
+  color: var(--captain-pink);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.product-description {
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.product-features {
+  list-style: none;
+  margin-bottom: 2rem;
+}
+
+.product-features li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.feature-check {
+  color: var(--success);
+  font-weight: 600;
+}
+
+.product-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--glass-border);
+}
+
+.product-price {
+  color: var(--captain-pink);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.product-button {
+  background: linear-gradient(135deg, var(--captain-pink), var(--captain-pink-light));
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.product-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(236, 72, 153, 0.4);
+}
+
+/* Captain's Corner */
+.captain-corner {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  padding: 3rem;
+  margin: 4rem 0;
+  text-align: center;
+}
+
+.captain-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.captain-portrait {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(135deg, var(--captain-pink), var(--captain-pink-light));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  box-shadow: 0 10px 30px rgba(236, 72, 153, 0.3);
+}
+
+.captain-speech {
+  background: var(--navy-light);
+  border: 1px solid var(--captain-pink);
+  border-radius: 16px;
+  padding: 1.5rem;
+  position: relative;
+  max-width: 500px;
+  text-align: left;
+}
+
+.captain-speech::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 10px solid transparent;
+  border-right-color: var(--captain-pink);
+}
+
+.captain-quote {
+  font-style: italic;
+  font-size: 1.1rem;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.captain-signature {
+  color: var(--captain-pink);
+  font-weight: 600;
+  margin-top: 1rem;
+}
+
+/* Stats Section */
+.stats-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  margin: 4rem 0;
+}
+
+.stat-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--captain-pink);
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Mobile Menu */
+.mobile-menu {
+  display: none;
+}
+
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
-  .grid { grid-template-columns: 1fr; }
-  .actions { grid-template-columns: 1fr; }
-  .welcome-bar { flex-direction: column; gap: 1rem; align-items: flex-start; }
-  .plan-bar { flex-direction: column; gap: 1rem; text-align: center; }
+  .main-container {
+    padding: 1rem;
+  }
+  
+  .captain-intro {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .captain-title {
+    font-size: 2rem;
+  }
+  
+  .pricing-hero {
+    padding: 2rem 1rem;
+  }
+  
+  .price-tag {
+    font-size: 3rem;
+  }
+  
+  .products-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .captain-message {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .captain-speech {
+    text-align: center;
+  }
+  
+  .captain-speech::before {
+    display: none;
+  }
+  
+  .stats-section {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .menu-toggle {
+    display: block;
+  }
+  
+  .nav-right .user-info {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .topnav {
+    padding: 1rem;
+  }
+  
+  .hero {
+    padding: 2rem 1rem;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  .stats-section {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="nav-logo">serlf</div>
-  <div class="nav-links">
-    <span class="nav-badge">Subscriber</span>
-    <a href="https://serlf.com">Home</a>
-    <a href="mailto:hello@serlf.com">Support</a>
-    <span id="user-info" style="display:flex;align-items:center;gap:8px;"></span>
-    <a href="#" onclick="signOut()" style="color:var(--muted);font-size:0.8rem;">Sign Out</a>
+<!-- Top Navigation -->
+<nav class="topnav">
+  <div class="nav-container">
+    <a href="#" class="nav-brand">
+      <div class="captain-avatar">🛒</div>
+      <div>
+        <div class="brand-text">Captain Commerce</div>
+        <div class="brand-domain">serlf.shop</div>
+      </div>
+    </a>
+    
+    <div class="nav-right">
+      <div class="nav-status">
+        <div class="status-dot"></div>
+        <span>Shop Online</span>
+      </div>
+      <div class="user-info" id="userInfo">
+        <span id="userName">Loading...</span>
+        <img class="user-avatar" id="userAvatar" src="" alt="User">
+      </div>
+      <button class="menu-toggle">☰</button>
+    </div>
   </div>
 </nav>
 
-<div class="container">
+<!-- Main Container -->
+<div class="main-container">
 
-  <div class="welcome-bar">
-    <h1>Welcome to <span>serlf</span></h1>
-    <div class="status-pill">
-      <div class="status-dot"></div>
-      Setting up your environment
-    </div>
-  </div>
-
-  <div class="section-title">Your Products</div>
-  <div class="grid">
-    <a href="platform.html" class="card" style="text-decoration:none;color:var(--text);">
-      <div class="card-icon">🤖</div>
-      <div class="card-title">serlf Platform</div>
-      <div class="card-desc">Your dedicated AI team, learning your business.</div>
-      <div class="card-status"><div class="dot dot-setup"></div> Setting up</div>
-    </a>
-    <a href="sites.html" class="card" style="text-decoration:none;color:var(--text);">
-      <div class="card-icon">🌐</div>
-      <div class="card-title">serlf Sites</div>
-      <div class="card-desc">Your AI-managed website, always online.</div>
-      <div class="card-status"><div class="dot dot-setup"></div> Ready to set up →</div>
-    </a>
-    <a href="security.html" class="card" style="text-decoration:none;color:var(--text);">
-      <div class="card-icon">🔐</div>
-      <div class="card-title">serlf Security</div>
-      <div class="card-desc">Enterprise-grade protection for your environment.</div>
-      <div class="card-status"><div class="dot dot-setup"></div> Setting up</div>
-    </a>
-    <a href="transform.html" class="card" style="text-decoration:none;color:var(--text);">
-      <div class="card-icon">☁️</div>
-      <div class="card-title">serlf Transform</div>
-      <div class="card-desc">Your professional cloud infrastructure.</div>
-      <div class="card-status"><div class="dot dot-setup"></div> Setting up</div>
-    </a>
-    <a href="intelligence.html" class="card" style="text-decoration:none;color:var(--text);">
-      <div class="card-icon">📊</div>
-      <div class="card-title">serlf Intelligence</div>
-      <div class="card-desc">AI-powered insights for your business.</div>
-      <div class="card-status"><div class="dot dot-setup"></div> Setting up</div>
-    </a>
-    <a href="labs.html" class="card" style="text-decoration:none;color:var(--text);">
-      <div class="card-icon">🧪</div>
-      <div class="card-title">serlf Labs</div>
-      <div class="card-desc">Cutting-edge AI research, applied to you.</div>
-      <div class="card-status"><div class="dot dot-setup"></div> Setting up</div>
-    </a>
-    <a href="mail.html" class="card" style="text-decoration:none;color:var(--text);">
-      <div class="card-icon">📧</div>
-      <div class="card-title">serlf Mail</div>
-      <div class="card-desc">Professional email for your business.</div>
-      <div class="card-status"><div class="dot dot-setup"></div> Ready to set up →</div>
-    </a>
-  </div>
-
-  <div class="section-title">Quick Actions</div>
-  <div class="actions">
-    <a href="mailto:hello@serlf.com?subject=Onboarding" class="action">
-      <div class="action-icon">💬</div>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="captain-intro">
+      <div class="captain-icon">🛒⚓</div>
       <div>
-        <div class="action-text">Start Onboarding</div>
-        <div class="action-sub">Tell us about your business</div>
-      </div>
-    </a>
-    <a href="mailto:hello@serlf.com?subject=Support" class="action">
-      <div class="action-icon">🛟</div>
-      <div>
-        <div class="action-text">Get Support</div>
-        <div class="action-sub">We're here to help</div>
-      </div>
-    </a>
-    <a href="https://billing.stripe.com/p/login/5kQ7v3c5L5pE5b2cMM" class="action">
-      <div class="action-icon">💳</div>
-      <div>
-        <div class="action-text">Manage Billing</div>
-        <div class="action-sub">Update payment or cancel</div>
-      </div>
-    </a>
-    <a href="https://serlf.com" class="action">
-      <div class="action-icon">📖</div>
-      <div>
-        <div class="action-text">Learn More</div>
-        <div class="action-sub">See all features and products</div>
-      </div>
-    </a>
-  </div>
-
-  <div class="plan-bar">
-    <div class="plan-info">
-      <div class="plan-name">serlf — All Products</div>
-      <div class="plan-price">$1 CAD / month · Active</div>
-    </div>
-    <a href="https://billing.stripe.com/p/login/5kQ7v3c5L5pE5b2cMM" class="plan-btn">Manage Plan</a>
-  </div>
-
-  <!-- Owner Panel -->
-  <div id="owner-panel" style="display:none;margin-top:2rem;">
-    <h2 style="font-size:1.3rem;font-weight:700;margin-bottom:1rem;color:var(--accent2);">⚓ Owner Panel</h2>
-    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;">
-      <a href="https://dashboard.stripe.com" target="_blank" class="card" style="text-decoration:none;">
-        <div class="card-icon">💳</div>
-        <div class="card-title">Stripe Dashboard</div>
-        <div class="card-desc">Payments, customers, revenue</div>
-      </a>
-      <a href="https://github.com/orgs/eose-sre/repositories" target="_blank" class="card" style="text-decoration:none;">
-        <div class="card-icon">📦</div>
-        <div class="card-title">GitHub Repos</div>
-        <div class="card-desc">All 8 serlf repos</div>
-      </a>
-      <a href="https://portal.azure.com" target="_blank" class="card" style="text-decoration:none;">
-        <div class="card-icon">☁️</div>
-        <div class="card-title">Azure Portal</div>
-        <div class="card-desc">DNS, KV, AKS, infrastructure</div>
-      </a>
-      <a href="https://master1.eose.ca" target="_blank" class="card" style="text-decoration:none;">
-        <div class="card-icon">⚓</div>
-        <div class="card-title">Admiral Fleet Control</div>
-        <div class="card-desc">Captain fleet management</div>
-      </a>
-      <a href="https://console.cloud.google.com" target="_blank" class="card" style="text-decoration:none;">
-        <div class="card-icon">🔑</div>
-        <div class="card-title">Google Cloud</div>
-        <div class="card-desc">OAuth, SSO, APIs</div>
-      </a>
-      <div class="card" id="stats-card">
-        <div class="card-icon">📊</div>
-        <div class="card-title">Quick Stats</div>
-        <div class="card-desc" id="quick-stats">Loading...</div>
+        <h1 class="captain-title">Captain Commerce</h1>
+        <p class="captain-subtitle">Your Fleet Merchant • Master of Fair Trade</p>
       </div>
     </div>
+    <p class="hero-description">
+      Ahoy! I'm the merchant who makes fairness profitable. In a world of complex pricing tiers and hidden fees, 
+      I offer radical simplicity: everything for $1. Not because it's cheap, but because it's honest.
+    </p>
+  </section>
 
-    <div style="margin-top:1.5rem;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;">
-      <div style="font-weight:700;margin-bottom:0.75rem;">🚀 Fleet Status</div>
-      <div style="display:flex;flex-wrap:wrap;gap:0.75rem;" id="fleet-domains"></div>
+  <!-- Pricing Hero -->
+  <section class="pricing-hero">
+    <div class="pricing-content">
+      <div class="price-tag">$1<span style="font-size:2rem;">/mo</span></div>
+      <div class="price-description">Gets You Everything</div>
+      <p class="price-details">
+        All 6 products • 60+ AI tools • Unlimited usage • No tiers, no upsells, no gotchas
+      </p>
+      <a href="https://buy.stripe.com/test_14k8wG7Qm7kC5VKeUU" target="_blank" class="cta-button">
+        🚀 Start Your Journey
+      </a>
     </div>
-  </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats-section">
+    <div class="stat-card">
+      <div class="stat-number">6</div>
+      <div class="stat-label">Premium Products</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">60+</div>
+      <div class="stat-label">AI-Powered Tools</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">8</div>
+      <div class="stat-label">Fleet Domains</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">100%</div>
+      <div class="stat-label">Fair Pricing</div>
+    </div>
+  </section>
+
+  <!-- Products Section -->
+  <section class="products-section">
+    <div class="section-header">
+      <h2 class="section-title">⚓ Captain's Treasure Chest</h2>
+      <p class="section-subtitle">Every tool in my arsenal, tested and refined for maximum value</p>
+    </div>
+
+    <div class="products-grid">
+      
+      <!-- Platform -->
+      <div class="product-card">
+        <div class="product-header">
+          <div class="product-icon">💼</div>
+          <div class="product-info">
+            <h3>serlf Platform</h3>
+            <div class="product-category">Command Center</div>
+          </div>
+        </div>
+        <p class="product-description">
+          Your AI-powered mission control. Manage 5 specialized AI agents, deploy across 8 domains, 
+          and orchestrate your entire digital fleet from one unified dashboard.
+        </p>
+        <ul class="product-features">
+          <li><span class="feature-check">✓</span> 5 AI Agents (Operations, Content, Security, Research, Creative)</li>
+          <li><span class="feature-check">✓</span> 8-Domain Fleet Management</li>
+          <li><span class="feature-check">✓</span> Real-time Monitoring & Analytics</li>
+          <li><span class="feature-check">✓</span> Zero-Trust Security Architecture</li>
+        </ul>
+        <div class="product-footer">
+          <div class="product-price">Included in $1/mo</div>
+          <button class="product-button" onclick="openProduct('platform')">Explore</button>
+        </div>
+      </div>
+
+      <!-- Sites -->
+      <div class="product-card">
+        <div class="product-header">
+          <div class="product-icon">🌐</div>
+          <div class="product-info">
+            <h3>serlf Sites</h3>
+            <div class="product-category">Website Builder</div>
+          </div>
+        </div>
+        <p class="product-description">
+          Professional websites in under 2 minutes. AI generates content from your business description, 
+          mobile-responsive by default, SEO optimized, and SSL secured.
+        </p>
+        <ul class="product-features">
+          <li><span class="feature-check">✓</span> AI-Generated Content & Copy</li>
+          <li><span class="feature-check">✓</span> Mobile-First Responsive Design</li>
+          <li><span class="feature-check">✓</span> SEO Optimized Structure</li>
+          <li><span class="feature-check">✓</span> SSL Certificates Included</li>
+        </ul>
+        <div class="product-footer">
+          <div class="product-price">Included in $1/mo</div>
+          <button class="product-button" onclick="openProduct('sites')">Build Site</button>
+        </div>
+      </div>
+
+      <!-- Security -->
+      <div class="product-card">
+        <div class="product-header">
+          <div class="product-icon">🔐</div>
+          <div class="product-info">
+            <h3>serlf Security</h3>
+            <div class="product-category">Protection Suite</div>
+          </div>
+        </div>
+        <p class="product-description">
+          Enterprise-grade security for everyone. Scan any domain for vulnerabilities, 
+          monitor your infrastructure 24/7, with AES-256 encryption and Zero Trust architecture.
+        </p>
+        <ul class="product-features">
+          <li><span class="feature-check">✓</span> Domain Vulnerability Scanner</li>
+          <li><span class="feature-check">✓</span> 24/7 Infrastructure Monitoring</li>
+          <li><span class="feature-check">✓</span> AES-256 + TLS 1.3 Encryption</li>
+          <li><span class="feature-check">✓</span> Zero Trust Network Security</li>
+        </ul>
+        <div class="product-footer">
+          <div class="product-price">Included in $1/mo</div>
+          <button class="product-button" onclick="openProduct('security')">Scan Now</button>
+        </div>
+      </div>
+
+      <!-- Transform -->
+      <div class="product-card">
+        <div class="product-header">
+          <div class="product-icon">☁️</div>
+          <div class="product-info">
+            <h3>serlf Transform</h3>
+            <div class="product-category">Cloud Infrastructure</div>
+          </div>
+        </div>
+        <p class="product-description">
+          Deploy and scale cloud infrastructure with ease. From Azure AKS to serverless functions, 
+          provision resources with simple clicks and intelligent defaults.
+        </p>
+        <ul class="product-features">
+          <li><span class="feature-check">✓</span> Azure AKS Cluster Management</li>
+          <li><span class="feature-check">✓</span> Serverless Function Deployment</li>
+          <li><span class="feature-check">✓</span> Auto-scaling & Load Balancing</li>
+          <li><span class="feature-check">✓</span> Infrastructure as Code Templates</li>
+        </ul>
+        <div class="product-footer">
+          <div class="product-price">Included in $1/mo</div>
+          <button class="product-button" onclick="openProduct('transform')">Deploy</button>
+        </div>
+      </div>
+
+      <!-- Intelligence -->
+      <div class="product-card">
+        <div class="product-header">
+          <div class="product-icon">📊</div>
+          <div class="product-info">
+            <h3>serlf Intelligence</h3>
+            <div class="product-category">Analytics Engine</div>
+          </div>
+        </div>
+        <p class="product-description">
+          Turn data into insights. Track performance across all your domains, analyze trends, 
+          get AI-powered recommendations, and make data-driven decisions.
+        </p>
+        <ul class="product-features">
+          <li><span class="feature-check">✓</span> Real-time Analytics Dashboard</li>
+          <li><span class="feature-check">✓</span> AI-Powered Trend Analysis</li>
+          <li><span class="feature-check">✓</span> Cross-Domain Performance Tracking</li>
+          <li><span class="feature-check">✓</span> Automated Insight Reports</li>
+        </ul>
+        <div class="product-footer">
+          <div class="product-price">Included in $1/mo</div>
+          <button class="product-button" onclick="openProduct('intelligence')">View Data</button>
+        </div>
+      </div>
+
+      <!-- Labs -->
+      <div class="product-card">
+        <div class="product-header">
+          <div class="product-icon">🔬</div>
+          <div class="product-info">
+            <h3>serlf Labs</h3>
+            <div class="product-category">Experimental AI</div>
+          </div>
+        </div>
+        <p class="product-description">
+          The cutting edge of AI innovation. Access experimental tools, beta features, 
+          and breakthrough capabilities before they're available anywhere else.
+        </p>
+        <ul class="product-features">
+          <li><span class="feature-check">✓</span> Experimental AI Models</li>
+          <li><span class="feature-check">✓</span> Beta Feature Access</li>
+          <li><span class="feature-check">✓</span> Advanced Prompt Engineering</li>
+          <li><span class="feature-check">✓</span> Early Innovation Pipeline</li>
+        </ul>
+        <div class="product-footer">
+          <div class="product-price">Included in $1/mo</div>
+          <button class="product-button" onclick="openProduct('labs')">Experiment</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Captain's Corner -->
+  <section class="captain-corner">
+    <div class="captain-message">
+      <div class="captain-portrait">🛒</div>
+      <div class="captain-speech">
+        <p class="captain-quote">
+          "I am meek in my learning but fierce in my standards. Every tool I curate is tested, 
+          refined, and worth your dollar. No complex tiers, no hidden fees—just honest value 
+          that serves creators, not confuses them."
+        </p>
+        <div class="captain-signature">— Captain Commerce ⚓</div>
+      </div>
+    </div>
+  </section>
 
 </div>
 
-<script src="serlf-api.js"></script>
 <script>
-// Load user info from auth
-(function() {
-  var auth = JSON.parse(localStorage.getItem('serlf_auth') || '{}');
-  var userInfo = document.getElementById('user-info');
-  if (auth.picture) {
-    userInfo.innerHTML = '<img src="' + auth.picture + '" style="width:28px;height:28px;border-radius:50%;border:2px solid var(--green);" alt="">';
-  }
-  if (auth.name || auth.email) {
-    var name = auth.name || auth.email.split('@')[0];
-    userInfo.innerHTML += '<span style="color:var(--text);font-size:0.85rem;font-weight:500;">' + name + '</span>';
-  }
-  // Personalize welcome
+// Initialize user info
+document.addEventListener('DOMContentLoaded', function() {
+  const auth = JSON.parse(localStorage.getItem('serlf_auth') || '{}');
+  const userNameEl = document.getElementById('userName');
+  const userAvatarEl = document.getElementById('userAvatar');
+  
   if (auth.name) {
-    var h1 = document.querySelector('.welcome-bar h1');
-    if (h1) h1.innerHTML = 'Welcome, <span>' + auth.name.split(' ')[0] + '</span>';
+    userNameEl.textContent = auth.name.split(' ')[0];
+  } else if (auth.email) {
+    userNameEl.textContent = auth.email.split('@')[0];
+  } else {
+    userNameEl.textContent = 'Captain';
   }
-
-  // Owner panel
-  if (SERLF_AUTH.isOwner()) {
-    document.getElementById('owner-panel').style.display = 'block';
-    
-    // Badge
-    var badge = document.querySelector('.nav-badge');
-    if (badge) { badge.textContent = 'Owner'; badge.style.background = 'rgba(240,98,146,0.15)'; badge.style.color = '#f06292'; }
-
-    // Fleet domains
-    var domains = ['serlf.ca','serlf.com','serlf.net','serlf.org','serlf.club','serlf.info','serlf.shop','serlf.store'];
-    var fleetEl = document.getElementById('fleet-domains');
-    domains.forEach(function(d) {
-      var link = document.createElement('a');
-      link.href = 'https://' + d;
-      link.target = '_blank';
-      link.style.cssText = 'padding:6px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--green);font-size:0.85rem;font-weight:600;text-decoration:none;transition:all 0.2s;';
-      link.textContent = d;
-      link.onmouseover = function() { this.style.borderColor = 'var(--green)'; };
-      link.onmouseout = function() { this.style.borderColor = 'var(--border)'; };
-      fleetEl.appendChild(link);
-    });
-
-    // Quick stats
-    document.getElementById('quick-stats').innerHTML = '8 domains · 6 products · 1 customer · $1 MRR';
+  
+  if (auth.picture) {
+    userAvatarEl.src = auth.picture;
+    userAvatarEl.style.display = 'block';
+  } else {
+    userAvatarEl.style.display = 'none';
   }
-})();
+});
 
-function signOut() {
-  localStorage.removeItem('serlf_auth');
-  window.location.href = 'login.html';
+// Product navigation functions
+function openProduct(product) {
+  const urls = {
+    'platform': '../site/platform.html',
+    'sites': '../site/sites.html',
+    'security': '../site/security.html',
+    'transform': '../site/transform.html',
+    'intelligence': '../site/intelligence.html',
+    'labs': '../site/labs.html'
+  };
+  
+  if (urls[product]) {
+    window.location.href = urls[product];
+  }
 }
+
+// Add some interactive sparkle effects
+document.querySelectorAll('.product-card').forEach(card => {
+  card.addEventListener('mouseenter', function(e) {
+    const sparkle = document.createElement('div');
+    sparkle.className = 'sparkle';
+    sparkle.style.position = 'absolute';
+    sparkle.style.left = Math.random() * 100 + '%';
+    sparkle.style.top = Math.random() * 100 + '%';
+    sparkle.style.width = '4px';
+    sparkle.style.height = '4px';
+    sparkle.style.background = '#ec4899';
+    sparkle.style.borderRadius = '50%';
+    sparkle.style.pointerEvents = 'none';
+    sparkle.style.animation = 'sparkle 0.6s ease-out forwards';
+    
+    card.appendChild(sparkle);
+    
+    setTimeout(() => {
+      if (sparkle.parentNode) {
+        sparkle.parentNode.removeChild(sparkle);
+      }
+    }, 600);
+  });
+});
+
+// Add sparkle animation
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes sparkle {
+    0% {
+      opacity: 1;
+      transform: scale(0);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0);
+    }
+  }
+`;
+document.head.appendChild(style);
+
+// Captain's welcome message
+setTimeout(() => {
+  console.log('🛒 Ahoy! Captain Commerce here. Welcome aboard the serlf.shop!');
+  console.log('⚓ Everything for $1/month - because fairness should be profitable.');
+  console.log('🚀 Ready to explore the fleet? Each product is hand-curated for maximum value.');
+}, 1000);
 </script>
 
 </body>
